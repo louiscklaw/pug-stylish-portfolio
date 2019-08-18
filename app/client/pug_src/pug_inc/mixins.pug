@@ -1,0 +1,12 @@
+//- common.pug
+
+mixin sidebar_brand(link_href, link_text)
+    a.js-scroll-trigger(href!=link_href)= link_text
+
+
+mixin sidebar_item(link_href, link_text)
+    a.js-scroll-trigger(href!=link_href)= link_text
+
+
+mixin helloworld
+    p helloworld

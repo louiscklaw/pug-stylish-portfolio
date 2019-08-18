@@ -1,0 +1,23 @@
+//- nav.pug
+
+include mixins.pug
+
+nav#sidebar-wrapper
+    ul.sidebar-nav
+        li(class="sidebar-brand")
+            +sidebar_brand("#page-top","Start Bootstrap")
+
+        li(class="sidebar-nav-item")
+            +sidebar_brand("#page-top","Home")
+
+        li(class="sidebar-nav-item")
+            +sidebar_brand("#about","About")
+
+        li(class="sidebar-nav-item")
+            +sidebar_brand("#services","Services")
+
+        li(class="sidebar-nav-item")
+            +sidebar_brand("#portfolio","Portfolio")
+
+        li(class="sidebar-nav-item")
+            +sidebar_brand("#contact","Contact")
