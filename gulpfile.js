@@ -173,7 +173,7 @@ function browserSyncReload(done) {
 function watchFiles() {
     gulp.watch(CLIENT_SCSS+'/*', css);
     gulp.watch(CLIENT_JS+'/*', js);
-    gulp.watch([CLIENT_PUG+'/*',CLIENT_PUG_INC+'/*'], browserSyncReload);
+    gulp.watch( [CLIENT_PUG + '/*', CLIENT_PUG_INC + '/*'], gulp.series( compile_pug ,browserSyncReload));
   }
 
 // BrowserSync
@@ -187,7 +187,8 @@ const browserSyncInit = function (done) {
     done();
   }
 
-function compile_pug (done) {
+function compile_pug ( done ) {
+    console.log( INDEX_PUG );
     gulp.src( INDEX_PUG )
         .pipe( pug( {} ) )
         .pipe( gulp.dest( PUBLIC_PATH ) );
@@ -201,7 +202,8 @@ function copy_img_files ( done ) {
 
 var default_task = series(
     re_privision_public_dir,
-    compile_pug, css, js, copy_img_files );
+    compile_pug, css, js, copy_img_files
+);
 
 
 
@@ -212,7 +214,7 @@ exports.w = () => {
     gulp.watch( SCSS_PATHs, default_task );
 }
 
-const build = gulp.parallel(compile_pug, css, js, copy_img_files);
+const build = gulp.parallel(re_privision_public_dir, compile_pug, css, js, copy_img_files);
 const watch = gulp.series(build, gulp.parallel(watchFiles, browserSyncInit));
 
 
