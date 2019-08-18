@@ -1,6 +1,34 @@
 // gulpfile.js
+"use strict";
+
 const path = require( 'path' );
-const gulp = require( 'gulp' );
+
+
+const autoprefixer = require( "gulp-autoprefixer" );
+const browsersync = require( "browser-sync" ).create();
+const cleanCSS = require( "gulp-clean-css" );
+const del = require( "del" );
+const gulp = require( "gulp" );
+const header = require( "gulp-header" );
+const merge = require( "merge-stream" );
+const plumber = require( "gulp-plumber" );
+const rename = require( "gulp-rename" );
+const sass = require( "gulp-sass" );
+const uglify = require( "gulp-uglify" );
+
+// Load package.json for banner
+const pkg = require( './package.json' );
+
+
+const banner = [ '/*!\n',
+    ' * Start Bootstrap - <%= pkg.title %> v<%= pkg.version %> (<%= pkg.homepage %>)\n',
+    ' * Copyright 2013-' + ( new Date() ).getFullYear(), ' <%= pkg.author %>\n',
+    ' * Licensed under <%= pkg.license %> (https://github.com/BlackrockDigital/<%= pkg.name %>/blob/master/LICENSE)\n',
+    ' */\n',
+    '\n'
+].join( '' );
+
+
 const {
     series,
     parallel
@@ -10,49 +38,60 @@ const {
 } = require( 'child_process' );
 
 const pug = require( 'gulp-pug' );
-const sass = require( 'gulp-sass' );
 
 // client souce
-APP_DIR = path.join( __dirname, 'app' );
-CLIENT_DIR = path.join( APP_DIR, 'client' );
+var APP_DIR = path.join( __dirname, 'app' );
+var CLIENT_DIR = path.join( APP_DIR, 'client' );
 
-CLIENT_SRC = path.join( CLIENT_DIR, 'pug_src' );
-PUG_INC = path.join( CLIENT_SRC, 'pug_inc' );
-SCSS_SRC = path.join( CLIENT_SRC, 'scss' );
-CLIENT_IMG = path.join( CLIENT_DIR, 'img' );
+var CLIENT_SRC = path.join( CLIENT_DIR, 'pug_src' );
+var PUG_INC = path.join( CLIENT_SRC, 'pug_inc' );
+var SCSS_SRC = path.join( CLIENT_SRC, 'scss' );
+var CLIENT_IMG = path.join( CLIENT_DIR, 'img' );
 
 // asset folder
-PUBLIC_PATH = path.join( __dirname, 'docs' );
-PUBLIC_CSS = path.join( PUBLIC_PATH, 'css' );
-PUBLIC_JS = path.join( PUBLIC_PATH, 'js' );
-PUBLIC_IMG = path.join( PUBLIC_PATH, 'img' );
+var PUBLIC_PATH = path.join( __dirname, 'docs' );
+var PUBLIC_CSS = path.join( PUBLIC_PATH, 'css' );
+var PUBLIC_JS = path.join( PUBLIC_PATH, 'js' );
+var PUBLIC_IMG = path.join( PUBLIC_PATH, 'img' );
 
-INDEX_PUG = path.join( CLIENT_SRC, 'index.pug' );
+var INDEX_PUG = path.join( CLIENT_SRC, 'index.pug' );
 
+var PROJ_HOME = __dirname;
+var APP_DIR = path.join( PROJ_HOME, 'app' );
+var CLIENT_DIR = path.join( APP_DIR, 'client' );
+var CLIENT_SRC = path.join( CLIENT_DIR, 'src' )
+var CLIENT_SCSS = path.join( CLIENT_SRC, 'scss' );
+var CLIENT_JS = path.join( CLIENT_SRC, 'js' );
+
+
+var PUBLIC_DIR = path.join( __dirname, 'docs' );
+var PUBLIC_CSS = path.join( PUBLIC_DIR, 'css' );
+var PUBLIC_JS = path.join( PUBLIC_DIR, 'js' );
+var PUBLIC_IMG = path.join( PUBLIC_DIR, 'img' );
 
 // build config
-PUG_PATHS = [ CLIENT_SRC, PUG_INC ];
-SCSS_PATHs = [SCSS_SRC]
-PUG_FILEMASK = PUG_PATHS.map( p => path.join( p, '*.pug' ) );
+var PUG_PATHS = [ CLIENT_SRC, PUG_INC ];
+var SCSS_PATHs = [ SCSS_SRC ]
+var PUG_FILEMASK = PUG_PATHS.map( p => path.join( p, '*.pug' ) );
 
 // i think it is easier if i implement it using fabric
 async function clean_public_dir() {
     return exec( `rm -rf ${PUBLIC_PATH}` );
 }
 
-async function mkdir_public_dir () {
+async function mkdir_public_dir() {
     return exec( `mkdir -p ${PUBLIC_PATH}` );
 }
 
-async function mkdir (dir_path) {
-    return exec( 'mkdir -p '+ dir_path);
+async function mkdir( dir_path ) {
+    return exec( 'mkdir -p ' + dir_path );
 }
 
-async function copy_img () {
-    return exec(`cp ${CLIENT_SRC}/img/* ${PUBLIC_PATH}/img/`);
+async function copy_img() {
+    return exec( `cp ${CLIENT_SRC}/img/* ${PUBLIC_PATH}/img/` );
 }
 
-async function re_privision_public_dir () {
+async function re_privision_public_dir() {
     await clean_public_dir();
     await mkdir_public_dir();
     await mkdir( PUBLIC_PATH );
@@ -73,19 +112,63 @@ async function helloworld() {
     console.log( "helloworld" );
 }
 
-async function sass_compile () {
+async function sass_compile() {
     return gulp.src( path.join( SCSS_SRC, 'main.scss' ) )
         .pipe( sass().on( 'error', sass.logError ) )
         .pipe( gulp.dest( PUBLIC_CSS ) );
 }
 
-async function js_compile () {
+async function js_compile() {
     // TODO: temp solution
-    return exec(`cp ${CLIENT_SRC}/js/* ${PUBLIC_JS}/`);
+    return exec( `cp ${CLIENT_SRC}/js/* ${PUBLIC_JS}/` );
 
 }
 
-default_task = series( re_privision_public_dir, buildHTML, sass_compile, js_compile);
+// CSS task
+function css() {
+    return gulp
+        .src( path.join( CLIENT_SCSS, 'stylish-portfolio.scss' ) )
+        .pipe( plumber() )
+        .pipe( sass( {
+            outputStyle: "expanded",
+            includePaths: "./node_modules",
+        } ) )
+        .on( "error", sass.logError )
+        .pipe( autoprefixer( {
+            browsers: [ 'last 2 versions' ],
+            cascade: false
+        } ) )
+        .pipe( header( banner, {
+            pkg: pkg
+        } ) )
+        .pipe( gulp.dest( PUBLIC_CSS ) )
+        .pipe( rename( {
+            suffix: ".min"
+        } ) )
+        .pipe( cleanCSS() )
+        .pipe( gulp.dest( PUBLIC_CSS ) )
+        .pipe( browsersync.stream() );
+}
+
+// JS task
+function js() {
+    return gulp
+        .src( [ path.join( CLIENT_JS, 'stylish-portfolio.js' ) ] )
+        .pipe( uglify() )
+        .pipe( header( banner, {
+            pkg: pkg
+        } ) )
+        .pipe( rename( {
+            suffix: '.min'
+        } ) )
+        .pipe( gulp.dest( PUBLIC_JS ) )
+        .pipe( browsersync.stream() );
+}
+
+var default_task = series(
+    re_privision_public_dir,
+    // buildHTML,
+    css, js );
 
 exports.default = default_task;
 exports.sass = sass_compile;
@@ -93,3 +176,9 @@ exports.w = () => {
     gulp.watch( PUG_FILEMASK, default_task );
     gulp.watch( SCSS_PATHs, default_task );
 }
+
+exports.css = css;
+exports.js = js;
+// exports.clean = clean;
+// exports.vendor = vendor;
+// exports.watch = watch;
