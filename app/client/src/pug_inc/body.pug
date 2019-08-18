@@ -4,11 +4,14 @@ include ./nav.pug
 include ./header.pug
 
 //- services
++content_about
+
 section#services(class="content-section bg-primary text-white text-center")
     .container
         +services_header("Services","What we offer")
         .row
             +service("Responsive", "Looks great on any screen size!", "icon-screen-smartphone")
+            +service("Redesigned", "Freshly redesigned for Bootstrap 4.", "icon-pencil")
 
 
 
