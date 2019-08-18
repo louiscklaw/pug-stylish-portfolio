@@ -47,7 +47,7 @@ var CLIENT_DIR = path.join( APP_DIR, 'client' );
 var CLIENT_SRC = path.join( CLIENT_DIR, 'pug_src' );
 var PUG_INC = path.join( CLIENT_SRC, 'pug_inc' );
 var SCSS_SRC = path.join( CLIENT_SRC, 'scss' );
-var CLIENT_IMG = path.join( CLIENT_DIR, 'img' );
+
 
 
 // asset folder
@@ -64,6 +64,7 @@ var CLIENT_DIR = path.join( APP_DIR, 'client' );
 var CLIENT_SRC = path.join( CLIENT_DIR, 'src' )
 var CLIENT_SCSS = path.join( CLIENT_SRC, 'scss' );
 var CLIENT_JS = path.join( CLIENT_SRC, 'js' );
+var CLIENT_IMG = path.join( CLIENT_SRC, 'img' );
 var CLIENT_PUG = CLIENT_SRC;
 var CLIENT_PUG_INC = path.join( CLIENT_SRC, 'pug_inc' );
 var INDEX_PUG = path.join( CLIENT_SRC, 'index.pug' );
@@ -196,7 +197,9 @@ function compile_pug ( done ) {
 }
 
 function copy_img_files ( done ) {
-    console.log( 'copy img files' );
+    gulp.src( [CLIENT_IMG + '/*'] )
+        .pipe( gulp.dest( PUBLIC_IMG ) );
+
     done();
 }
 
