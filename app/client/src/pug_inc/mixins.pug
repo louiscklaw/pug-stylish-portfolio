@@ -62,4 +62,4 @@ mixin project_item(title, desc, img_path)
                 span(class="caption-content")
                     h2= title
                     p(class="mb-0")= desc
-            img(class="img-fluid" src="img/portfolio-1.jpg" alt="")
+            img(class="img-fluid" src!= img_path alt="")
