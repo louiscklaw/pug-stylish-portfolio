@@ -1,45 +1,47 @@
 //- body.pug
+include mixins.pug
 
-include ./nav.pug
-include ./header.pug
+//- include ./nav.pug
+
+//- include ./header.pug
 
 //- services
-+content_about
+//- +content_about
 
 
-section#services(class="content-section bg-primary text-white text-center")
-    .container
-        +services_header("Services","What we offer")
-        .row
-            +service("Responsive", "Looks great on any screen size!", "icon-screen-smartphone")
-            +service("Redesigned", "Freshly redesigned for Bootstrap 4.", "icon-pencil")
-            +service("Redesigned", "Freshly redesigned for Bootstrap 4.", "icon-pencil")
-            +service("Redesigned", "Freshly redesigned for Bootstrap 4.", "icon-pencil")
+//- section#services(class="content-section bg-primary text-white text-center")
+//-     .container
+//-         +services_header("Services","What we offer")
+//-         .row
+//-             +service("Responsive", "Looks great on any screen size!", "icon-screen-smartphone")
+//-             //- +service("Redesigned", "Freshly redesigned for Bootstrap 4.", "icon-pencil")
+//-             //- +service("Redesigned", "Freshly redesigned for Bootstrap 4.", "icon-pencil")
+//-             //- +service("Redesigned", "Freshly redesigned for Bootstrap 4.", "icon-pencil")
 
-//- portfolio/recent projects
-section#portfolio(class="content-section")
-    .container
-        +section_header("Portfolio", "Recent Projects")
-        .row(class="no-gutters")
-            +project_item("Stationary", "A yellow pencil with envelopes on a clean, blue backdrop!", "img/portfolio-1.jpg")
-            +project_item("Ice Cream", "A dark blue background with a colored pencil, a clip, and a tiny ice cream cone!", "img/portfolio-2.jpg")
-            +project_item("Strawberries", "Strawberries are such a tasty snack, especially with a little sugar on top!", "img/portfolio-3.jpg")
-            +project_item("Workspace", "A yellow workspace with some scissors, pencils, and other objects.", "img/portfolio-4.jpg")
+//- //- portfolio/recent projects
+//- section#portfolio(class="content-section")
+//-     .container
+//-         +section_header("Portfolio", "Recent Projects")
+//-         .row(class="no-gutters")
+//-             +project_item("Stationary", "A yellow pencil with envelopes on a clean, blue backdrop!", "img/portfolio-1.jpg")
+//-             +project_item("Ice Cream", "A dark blue background with a colored pencil, a clip, and a tiny ice cream cone!", "img/portfolio-2.jpg")
+//-             +project_item("Strawberries", "Strawberries are such a tasty snack, especially with a little sugar on top!", "img/portfolio-3.jpg")
+//-             +project_item("Workspace", "A yellow workspace with some scissors, pencils, and other objects.", "img/portfolio-4.jpg")
 
 
-section(class="content-section bg-primary text-white")
-    div(class="container text-center")
-        h2(class="mb-4") The buttons below are impossible to resist...
-        a(href="#" class="btn btn-xl btn-light mr-4") Click Me!
-        a(href="#" class="btn btn-xl btn-dark") Look at Me!
+//- section(class="content-section bg-primary text-white")
+//-     div(class="container text-center")
+//-         h2(class="mb-4") The buttons below are impossible to resist...
+//-         a(href="#" class="btn btn-xl btn-light mr-4") Click Me!
+//-         a(href="#" class="btn btn-xl btn-dark") Look at Me!
 
+
+
+//- //- google map
+//- section.map#contact
+//-     +google_map
+
+//- +scroll_to_top
 
 include ./footer.pug
-
-//- google map
-section.map#contact
-    +google_map
-
-+scroll_to_top
-
 include ./script.pug

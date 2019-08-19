@@ -93,8 +93,12 @@ async function mkdir( dir_path ) {
     return exec( 'mkdir -p ' + dir_path );
 }
 
+async function copy_dir ( src_path, dst_path ) {
+    return exec( `cp ${src_path} ${dst_path}` );
+}
+
 async function copy_img() {
-    return exec( `cp ${CLIENT_SRC}/img/* ${PUBLIC_PATH}/img/` );
+    return copy_dir(CLIENT_IMG+"/*", PUBLIC_IMG+"/")
 }
 
 async function re_privision_public_dir() {
